@@ -1,4 +1,4 @@
-const CACHE='integrated-care-pwa-v3';
+const CACHE='integrated-care-pwa-v4';
 const ASSETS=['./','./index.html','./style.css','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)));

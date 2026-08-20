@@ -237,10 +237,10 @@ const OPTIONS = {
     '65세 이상','장애인','장기요양등급자 중 재가급여 이용자','장기요양 등급외자',
     '장기요양 등급 대기자','최근 퇴원 후 지역사회 복귀자로 돌봄 필요','노인맞춤돌봄서비스 중점군'
   ],
-  health: ['방문진료 또는 재택의료 검토 필요','복약관리에 어려움이 있음','혈압·혈당 등 지속적인 건강관리 필요','병원 방문 또는 진료 이용에 어려움이 있음','최근 건강상태가 악화되었다고 판단됨'],
-  nursing: ['방문요양 검토 필요','방문목욕 검토 필요','옷 입기·세면 등 일상동작에 도움이 필요','활동지원이 필요'],
-  life: ['식사 준비 또는 식사 유지에 어려움이 있음','청소·세탁 등 가사에 어려움이 있음','외출 또는 이동지원이 필요','장보기 등 일상생활 지원이 필요'],
-  housing: ['최근 낙상 경험이 있음','욕실·문턱·계단 등 낙상 위험요인이 있음','안전손잡이·미끄럼방지 등 낙상방지용품 검토 필요','간편 집수리 검토 필요']
+  health: ['방문진료 또는 재택의료 검토 필요','복약관리에 어려움이 있음','혈압·혈당 등 지속적인 건강관리 필요','병원 방문 또는 진료 이용에 어려움이 있음','최근 건강상태가 악화되었다고 판단됨','해당사항 없음'],
+  nursing: ['방문요양 검토 필요','방문목욕 검토 필요','옷 입기·세면 등 일상동작에 도움이 필요','활동지원이 필요','해당사항 없음'],
+  life: ['식사 준비 또는 식사 유지에 어려움이 있음','청소·세탁 등 가사에 어려움이 있음','외출 또는 이동지원이 필요','장보기 등 일상생활 지원이 필요','해당사항 없음'],
+  housing: ['최근 낙상 경험이 있음','욕실·문턱·계단 등 낙상 위험요인이 있음','안전손잡이·미끄럼방지 등 낙상방지용품 검토 필요','간편 집수리 검토 필요','해당사항 없음']
 };
 
 for (const [group, items] of Object.entries(OPTIONS)) {
@@ -252,6 +252,24 @@ for (const [group, items] of Object.entries(OPTIONS)) {
       `<label class="check" for="${id}"><input id="${id}" type="checkbox" data-group="${group}" value="${txt}"><span>${txt}</span></label>`);
   });
 }
+
+// '해당사항 없음'은 같은 섹션의 다른 항목과 동시에 선택되지 않도록 처리
+['health','nursing','life','housing'].forEach(group=>{
+  document.querySelectorAll(`input[data-group="${group}"]`).forEach(input=>{
+    input.addEventListener('change', ()=>{
+      const sameGroup = [...document.querySelectorAll(`input[data-group="${group}"]`)];
+      const none = sameGroup.find(el => el.value === '해당사항 없음');
+
+      if(input.value === '해당사항 없음' && input.checked){
+        sameGroup.forEach(el=>{
+          if(el !== input) el.checked = false;
+        });
+      }else if(input.checked && none){
+        none.checked = false;
+      }
+    });
+  });
+});
 
 
 const THEME_KEY = 'integratedCareTheme';
