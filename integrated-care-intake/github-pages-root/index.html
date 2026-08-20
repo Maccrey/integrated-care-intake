@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#2563eb" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="통합돌봄 상담" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="./icon-192.png" />
+  <title>통합돌봄 초기상담</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+<div class="app">
+  <div class="page-head">
+    <div>
+      <h1>의료·요양 통합돌봄 초기상담</h1>
+      <div class="sub">담당자 초기 면담용 · 모바일 대응 · 데이터는 이 기기 브라우저에만 저장</div>
+    </div>
+    <div class="head-actions">
+      <label class="theme-switch" title="다크모드">
+        <span class="theme-label">다크모드</span>
+        <input type="checkbox" id="darkModeToggle" aria-label="다크모드 전환" />
+        <span class="switch-track"><span class="switch-thumb"></span></span>
+      </label>
+    </div>
+  </div>
+  <div class="toptools">
+    <button class="secondary" id="installBtn">홈 화면에 앱 설치</button>
+    <button class="secondary" id="changeStaffBtn">담당자 변경</button>
+  </div>
+
+  <div class="notice">
+    <b>개인정보 최소수집:</b> 주민등록번호·상세 병명·불필요한 가족정보는 입력하지 마세요.
+    이 화면의 자동분류는 최종 행정판정이 아니라 <b>추가 상담 우선순위 참고용</b>입니다.
+  </div>
+
+  <div class="card">
+    <h2>상담 기본정보</h2>
+    <div class="grid">
+      <div>
+        <label for="staff">담당자명</label>
+        <input id="staff" class="readonly" type="text" readonly autocomplete="off" placeholder="최초 접속 시 등록" />
+      </div>
+      <div>
+        <label for="name">대상자 성명/이니셜(선택)</label>
+        <input id="name" type="text" autocomplete="off" placeholder="예: 이○○ 또는 LSH" />
+      </div>
+    </div>
+    <div class="grid">
+      <div>
+        <label for="age">연령대</label>
+        <select id="age">
+          <option value="">선택</option>
+          <option>65세 미만</option><option>65~74세</option><option>75~84세</option><option>85세 이상</option><option>확인 필요</option>
+        </select>
+      </div>
+      <div>
+        <label>예상 관리번호</label>
+        <input id="previewId" type="text" readonly />
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>우선 발굴 대상</h2>
+    <div class="checks" data-group="priority"></div>
+  </div>
+
+  <div class="card">
+    <div class="section-title-row">
+      <h2>거주 및 돌봄환경</h2>
+      <span class="section-badge">초기 확인</span>
+    </div>
+
+    <label class="field-label">거주 형태</label>
+    <div class="choice-grid two">
+      <label class="choice-card">
+        <input type="radio" name="residenceType" value="독거" />
+        <span class="choice-content">
+          <b>1. 독거</b>
+          <small>혼자 거주</small>
+        </span>
+      </label>
+      <label class="choice-card">
+        <input type="radio" name="residenceType" value="비독거" />
+        <span class="choice-content">
+          <b>2. 비독거</b>
+          <small>가족·동거인과 함께 거주</small>
+        </span>
+      </label>
+    </div>
+
+    <div id="nonSingleMemoWrap" class="conditional-field hidden">
+      <label for="nonSingleMemo">비독거 메모</label>
+      <textarea id="nonSingleMemo" placeholder="예: 배우자와 거주, 자녀와 동거 등 필요한 범위에서만 입력"></textarea>
+    </div>
+
+    <label class="choice-card public-care-card">
+      <input type="checkbox" id="publicCareUse" />
+      <span class="choice-content">
+        <b>3. 공적돌봄 사용 여부</b>
+        <small>현재 공적 돌봄서비스를 이용 중이면 체크</small>
+      </span>
+    </label>
+
+    <div id="publicCareMemoWrap" class="conditional-field hidden">
+      <label for="publicCareMemo">공적돌봄 메모</label>
+      <textarea id="publicCareMemo" placeholder="예: 노인맞춤돌봄 주 2회, 방문요양 이용 중 등"></textarea>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title-row">
+      <h2>거동상태</h2>
+      <span class="section-badge">필수 확인</span>
+    </div>
+    <div class="choice-grid three">
+      <label class="choice-card">
+        <input type="radio" name="mobility" value="독립거동가능" />
+        <span class="choice-content">
+          <b>1. 독립거동가능</b>
+          <small>도움 없이 이동 가능</small>
+        </span>
+      </label>
+      <label class="choice-card">
+        <input type="radio" name="mobility" value="보조기구 사용" />
+        <span class="choice-content">
+          <b>2. 보조기구 사용</b>
+          <small>지팡이·보행기·휠체어 등</small>
+        </span>
+      </label>
+      <label class="choice-card">
+        <input type="radio" name="mobility" value="독립거동불가능" />
+        <span class="choice-content">
+          <b>3. 독립거동불가능</b>
+          <small>타인의 도움이 필요</small>
+        </span>
+      </label>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>보건의료·건강관리</h2>
+    <div class="checks" data-group="health"></div>
+  </div>
+
+  <div class="card">
+    <h2>요양·활동지원</h2>
+    <div class="checks" data-group="nursing"></div>
+  </div>
+
+  <div class="card">
+    <h2>생활지원</h2>
+    <div class="checks" data-group="life"></div>
+  </div>
+
+  <div class="card">
+    <h2>주거지원</h2>
+    <div class="checks" data-group="housing"></div>
+  </div>
+
+  <div class="card">
+    <h2>초기 상담 결과</h2>
+    <label for="judgment">담당자 초기 판단</label>
+    <select id="judgment">
+      <option value="">선택</option>
+      <option>우선 상세상담이 필요하다고 판단</option>
+      <option>추가 확인 후 판단</option>
+      <option>현재 별도 돌봄 필요가 낮아 보임</option>
+      <option>판단 보류</option>
+    </select>
+
+    <label for="recontact">추가 상담/재접촉 필요 여부</label>
+    <select id="recontact">
+      <option value="">선택</option><option>예</option><option>아니오</option>
+    </select>
+
+    <label for="memo">특이사항 및 기타 메모</label>
+    <textarea id="memo" placeholder="서비스 판단에 필요한 특이사항만 간단히 입력하세요. 주민등록번호·상세 병력·가족의 민감정보 등은 입력하지 마세요."></textarea>
+
+    <div id="resultBox" class="result">체크 내용을 입력하면 저장 시 점수와 분류가 계산됩니다.</div>
+  </div>
+
+  <div class="card">
+    <h2>저장 현황</h2>
+    <div class="stat">
+      <div class="pill"><b id="countA">0</b><span>A 우선검토</span></div>
+      <div class="pill"><b id="countB">0</b><span>B 추가확인</span></div>
+      <div class="pill"><b id="countC">0</b><span>C 일반관리</span></div>
+    </div>
+    <div class="actions" style="margin-top:12px">
+      <button class="success" id="exportBtn">오늘 엑셀 다운로드</button>
+      <button class="secondary" id="exportAllBtn">전체 엑셀 다운로드</button>
+      <button class="secondary" id="backupBtn">JSON 백업</button>
+      <button class="danger" id="clearAllBtn">기기 데이터 전체삭제</button>
+    </div>
+    <div class="small" style="margin-top:8px">오늘 엑셀 다운로드 후 저장을 확인하면 오늘 상담기록만 일괄삭제할 수 있습니다. 파일은 서버로 업로드되지 않습니다.</div>
+  </div>
+
+  <div class="card">
+    <h2>최근 상담 기록</h2>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>관리번호</th><th>상담일시</th><th>대상자</th><th>점수</th><th>분류</th><th>추천서비스</th><th>메모</th><th></th></tr></thead>
+        <tbody id="records"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<div id="staffModal" class="modal" aria-hidden="true">
+  <div class="modalbox">
+    <h2>담당자 등록</h2>
+    <p>이 기기에서 사용할 담당자명을 한 번 등록합니다. 이후 자동으로 기억되며, 상단의 ‘담당자 변경’에서 수정할 수 있습니다.</p>
+    <label for="staffSetupInput">담당자명</label>
+    <input id="staffSetupInput" type="text" autocomplete="off" placeholder="예: 김○○" />
+    <div class="actions">
+      <button class="primary" id="saveStaffBtn">저장하고 시작</button>
+    </div>
+  </div>
+</div>
+
+<div class="footerbar">
+  <button class="secondary" id="resetBtn">입력 초기화</button>
+  <button class="primary" id="saveBtn">상담 저장</button>
+</div>
+
+<!-- XLSX 파일 생성을 위해 SheetJS 사용 -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script>
+const OPTIONS = {
+  priority: [
+    '65세 이상','장애인','장기요양등급자 중 재가급여 이용자','장기요양 등급외자',
+    '장기요양 등급 대기자','최근 퇴원 후 지역사회 복귀자로 돌봄 필요','노인맞춤돌봄서비스 중점군'
+  ],
+  health: ['방문진료 또는 재택의료 검토 필요','복약관리에 어려움이 있음','혈압·혈당 등 지속적인 건강관리 필요','병원 방문 또는 진료 이용에 어려움이 있음','최근 건강상태가 악화되었다고 판단됨'],
+  nursing: ['방문요양 검토 필요','방문목욕 검토 필요','옷 입기·세면 등 일상동작에 도움이 필요','활동지원이 필요'],
+  life: ['식사 준비 또는 식사 유지에 어려움이 있음','청소·세탁 등 가사에 어려움이 있음','외출 또는 이동지원이 필요','장보기 등 일상생활 지원이 필요'],
+  housing: ['최근 낙상 경험이 있음','욕실·문턱·계단 등 낙상 위험요인이 있음','안전손잡이·미끄럼방지 등 낙상방지용품 검토 필요','간편 집수리 검토 필요']
+};
+
+for (const [group, items] of Object.entries(OPTIONS)) {
+  const box = document.querySelector(`[data-group="${group}"]`);
+  if (!box) continue;
+  items.forEach((txt, i) => {
+    const id = `${group}_${i}`;
+    box.insertAdjacentHTML('beforeend',
+      `<label class="check" for="${id}"><input id="${id}" type="checkbox" data-group="${group}" value="${txt}"><span>${txt}</span></label>`);
+  });
+}
+
+
+const THEME_KEY = 'integratedCareTheme';
+
+function setTheme(theme){
+  const dark = theme === 'dark';
+  document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+  document.getElementById('darkModeToggle').checked = dark;
+  localStorage.setItem(THEME_KEY, dark ? 'dark' : 'light');
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if(meta) meta.setAttribute('content', dark ? '#111827' : '#2563eb');
+}
+function initTheme(){
+  const saved = localStorage.getItem(THEME_KEY);
+  const preferredDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  setTheme(saved || (preferredDark ? 'dark' : 'light'));
+}
+document.getElementById('darkModeToggle').addEventListener('change', e=>{
+  setTheme(e.target.checked ? 'dark' : 'light');
+});
+
+function residenceType(){
+  return document.querySelector('input[name="residenceType"]:checked')?.value || '';
+}
+function mobilityStatus(){
+  return document.querySelector('input[name="mobility"]:checked')?.value || '';
+}
+function syncConditionalFields(){
+  const nonSingle = residenceType() === '비독거';
+  const publicCare = document.getElementById('publicCareUse').checked;
+  document.getElementById('nonSingleMemoWrap').classList.toggle('hidden', !nonSingle);
+  document.getElementById('publicCareMemoWrap').classList.toggle('hidden', !publicCare);
+  if(!nonSingle) document.getElementById('nonSingleMemo').value = '';
+  if(!publicCare) document.getElementById('publicCareMemo').value = '';
+}
+document.querySelectorAll('input[name="residenceType"]').forEach(el=>el.addEventListener('change', syncConditionalFields));
+document.getElementById('publicCareUse').addEventListener('change', syncConditionalFields);
+
+const DB_NAME = 'integratedCareInitialDB';
+const STORE = 'consultations';
+const STAFF_KEY = 'integratedCareStaffName';
+let db;
+let deferredInstallPrompt = null;
+
+function getSavedStaff(){ return (localStorage.getItem(STAFF_KEY) || '').trim(); }
+function applySavedStaff(){
+  const v=getSavedStaff();
+  document.getElementById('staff').value=v;
+  return v;
+}
+function openStaffModal(){
+  const m=document.getElementById('staffModal');
+  document.getElementById('staffSetupInput').value=getSavedStaff();
+  m.classList.add('show');
+  m.setAttribute('aria-hidden','false');
+  setTimeout(()=>document.getElementById('staffSetupInput').focus(),50);
+}
+function closeStaffModal(){
+  const m=document.getElementById('staffModal');
+  m.classList.remove('show');
+  m.setAttribute('aria-hidden','true');
+}
+function saveStaffName(){
+  const name=document.getElementById('staffSetupInput').value.trim();
+  if(!name){ alert('담당자명을 입력하세요.'); return; }
+  localStorage.setItem(STAFF_KEY,name);
+  applySavedStaff();
+  closeStaffModal();
+}
+function isIOS(){
+  return /iphone|ipad|ipod/i.test(navigator.userAgent);
+}
+function isStandalone(){
+  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+
+
+function openDB(){
+  return new Promise((resolve,reject)=>{
+    const req=indexedDB.open(DB_NAME,1);
+    req.onupgradeneeded=()=>{
+      const d=req.result;
+      if(!d.objectStoreNames.contains(STORE)){
+        const s=d.createObjectStore(STORE,{keyPath:'managementId'});
+        s.createIndex('createdAt','createdAt');
+      }
+    };
+    req.onsuccess=()=>{db=req.result;resolve(db)};
+    req.onerror=()=>reject(req.error);
+  });
+}
+function tx(mode='readonly'){ return db.transaction(STORE,mode).objectStore(STORE); }
+function getAll(){ return new Promise((res,rej)=>{const r=tx().getAll();r.onsuccess=()=>res(r.result||[]);r.onerror=()=>rej(r.error)}); }
+function putRow(row){ return new Promise((res,rej)=>{const r=tx('readwrite').put(row);r.onsuccess=()=>res();r.onerror=()=>rej(r.error)}); }
+function delRow(id){ return new Promise((res,rej)=>{const r=tx('readwrite').delete(id);r.onsuccess=()=>res();r.onerror=()=>rej(r.error)}); }
+function clearDB(){ return new Promise((res,rej)=>{const r=tx('readwrite').clear();r.onsuccess=()=>res();r.onerror=()=>rej(r.error)}); }
+function deleteRowsByDateKey(key){
+  return new Promise(async (resolve,reject)=>{
+    try{
+      const all=await getAll();
+      const ids=all.filter(r=>(r.managementId||'').startsWith(key+'-')).map(r=>r.managementId);
+      if(!ids.length){ resolve(0); return; }
+      const t=db.transaction(STORE,'readwrite');
+      const s=t.objectStore(STORE);
+      ids.forEach(id=>s.delete(id));
+      t.oncomplete=()=>resolve(ids.length);
+      t.onerror=()=>reject(t.error);
+    }catch(err){ reject(err); }
+  });
+}
+
+
+function selected(group){
+  return [...document.querySelectorAll(`input[data-group="${group}"]:checked`)].map(x=>x.value);
+}
+function pad(n,l=2){return String(n).padStart(l,'0')}
+function dateKey(d=new Date()){return `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}`}
+function displayDate(d=new Date()){return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`}
+async function nextManagementId(){
+  const all=await getAll(); const key=dateKey(); let max=0;
+  all.forEach(r=>{ if((r.managementId||'').startsWith(key+'-')) max=Math.max(max,Number(r.managementId.split('-')[1])||0); });
+  return `${key}-${pad(max+1,3)}`;
+}
+async function refreshPreview(){ document.getElementById('previewId').value = await nextManagementId(); }
+
+function evaluate(data){
+  let score=0; const reasons=[]; const services=new Set();
+  const has=(arr,s)=>arr.some(v=>v.includes(s));
+  if(has(data.priority,'등급외자')) score+=3;
+  if(has(data.priority,'등급 대기자')) score+=3;
+  if(has(data.priority,'최근 퇴원')){score+=4;reasons.push('최근 퇴원 후 돌봄 필요')}
+  if(has(data.priority,'맞춤돌봄서비스 중점군')) score+=3;
+  if(has(data.priority,'장애인')) score+=1;
+
+  if(data.residenceType === '독거' || has(data.care || [],'독거')){
+    score+=2;
+    reasons.push('독거');
+  }
+  if(data.mobility === '보조기구 사용'){
+    score+=2;
+    reasons.push('보조기구 사용');
+    services.add('이동·활동지원 검토');
+  }
+  if(data.mobility === '독립거동불가능'){
+    score+=4;
+    reasons.push('독립거동 불가능');
+    services.add('이동·활동지원 검토');
+  }
+
+  if(has(data.health,'방문진료')){score+=2;services.add('방문진료·재택의료 검토')}
+  if(has(data.health,'복약관리')){score+=2;services.add('방문건강관리·복약지도 검토')}
+  if(has(data.health,'혈압·혈당')){score+=2;services.add('방문건강관리 검토')}
+  if(has(data.health,'병원 방문')){score+=2;services.add('의료이용·이동지원 검토')}
+  if(has(data.health,'건강상태가 악화')){score+=3;reasons.push('최근 건강상태 악화')}
+
+  if(has(data.nursing,'방문요양')){score+=3;services.add('방문요양 검토')}
+  if(has(data.nursing,'방문목욕')){score+=3;services.add('방문목욕 검토')}
+  if(has(data.nursing,'일상동작')){score+=3;services.add('요양·일상생활지원 검토')}
+  if(has(data.nursing,'활동지원')){score+=3;services.add('활동지원 검토')}
+
+  if(has(data.life,'식사 준비')){score+=3;services.add('식사지원 검토')}
+  if(has(data.life,'가사')){score+=2;services.add('가사지원 검토')}
+  if(has(data.life,'외출 또는 이동지원')){score+=3;services.add('이동지원 검토')}
+  if(has(data.life,'장보기')){score+=1;services.add('일상생활지원 검토')}
+
+  if(has(data.housing,'최근 낙상 경험')){score+=4;reasons.push('최근 낙상 경험');services.add('낙상예방·주거안전지원 검토')}
+  if(has(data.housing,'낙상 위험요인')){score+=3;services.add('낙상예방용품 설치 검토')}
+  if(has(data.housing,'낙상방지용품')){score+=2;services.add('낙상방지용품 설치 검토')}
+  if(has(data.housing,'간편 집수리')){score+=2;services.add('간편 집수리 검토')}
+
+  const isSingle = data.residenceType === '독거' || has(data.care || [],'독거');
+  const combo=(has(data.priority,'최근 퇴원')&&isSingle) ||
+              (has(data.housing,'최근 낙상 경험')&&isSingle) ||
+              (data.mobility === '독립거동불가능' && has(data.life,'식사 준비'));
+  if(combo) reasons.push('복합 위험요인');
+
+  const grade = (score>=12 || combo) ? 'A-우선검토' : score>=6 ? 'B-추가확인' : 'C-일반관리';
+  if(!services.size) services.add('추가 욕구 확인');
+  return {score,grade,reasons:[...new Set(reasons)],services:[...services]};
+}
+
+function readForm(){
+  return {
+    staff:document.getElementById('staff').value.trim(),
+    subject:document.getElementById('name').value.trim(),
+    age:document.getElementById('age').value,
+    priority:selected('priority'),
+    residenceType:residenceType(),
+    nonSingleMemo:document.getElementById('nonSingleMemo').value.trim(),
+    publicCareUse:document.getElementById('publicCareUse').checked,
+    publicCareMemo:document.getElementById('publicCareMemo').value.trim(),
+    mobility:mobilityStatus(),
+    care:[
+      residenceType(),
+      document.getElementById('publicCareUse').checked ? '공적돌봄 사용' : ''
+    ].filter(Boolean),
+    health:selected('health'),
+    nursing:selected('nursing'), life:selected('life'), housing:selected('housing'),
+    judgment:document.getElementById('judgment').value,
+    recontact:document.getElementById('recontact').value,
+    memo:document.getElementById('memo').value.trim()
+  };
+}
+function resetForm(){
+  document.querySelectorAll('input[type=checkbox]').forEach(x=>x.checked=false);
+  document.querySelectorAll('input[type=radio]').forEach(x=>x.checked=false);
+  ['name','memo','nonSingleMemo','publicCareMemo'].forEach(id=>document.getElementById(id).value='');
+  ['age','judgment','recontact'].forEach(id=>document.getElementById(id).value='');
+  syncConditionalFields();
+  document.getElementById('resultBox').textContent='체크 내용을 입력하면 저장 시 점수와 분류가 계산됩니다.';
+  refreshPreview();
+}
+
+async function save(){
+  const d=readForm();
+  if(!d.staff){alert('담당자명을 입력하세요.');return}
+  if(!d.age){alert('연령대를 선택하세요.');return}
+  if(!d.residenceType){alert('거주 형태(독거/비독거)를 선택하세요.');return}
+  if(!d.mobility){alert('거동상태를 선택하세요.');return}
+  if(!d.judgment){alert('담당자 초기 판단을 선택하세요.');return}
+  if(!d.recontact){alert('추가 상담 여부를 선택하세요.');return}
+  const managementId=await nextManagementId();
+  const result=evaluate(d);
+  const row={
+    managementId, createdAt:new Date().toISOString(), consultationAt:displayDate(),
+    ...d, score:result.score, grade:result.grade,
+    reasons:result.reasons.join(' / '), services:result.services.join(' / ')
+  };
+  await putRow(row);
+  document.getElementById('resultBox').innerHTML=
+    `<b>${managementId}</b><br>점수: ${row.score} / 분류: <b>${row.grade}</b><br>추천: ${row.services}`;
+  await render();
+  document.getElementById('name').value='';
+  document.getElementById('memo').value='';
+  document.querySelectorAll('input[type=checkbox]').forEach(x=>x.checked=false);
+  document.querySelectorAll('input[type=radio]').forEach(x=>x.checked=false);
+  document.getElementById('nonSingleMemo').value='';
+  document.getElementById('publicCareMemo').value='';
+  syncConditionalFields();
+  document.getElementById('age').value='';
+  document.getElementById('judgment').value='';
+  document.getElementById('recontact').value='';
+  refreshPreview();
+}
+
+async function render(){
+  const all=(await getAll()).sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
+  let A=0,B=0,C=0; const tbody=document.getElementById('records'); tbody.innerHTML='';
+  all.forEach(r=>{
+    if(r.grade.startsWith('A'))A++; else if(r.grade.startsWith('B'))B++; else C++;
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${esc(r.managementId)}</td><td>${esc(r.consultationAt)}</td><td>${esc(r.subject||'-')}</td>
+      <td>${r.score}</td><td>${esc(r.grade)}</td><td>${esc(r.services)}</td><td style="white-space:normal;min-width:180px">${esc(r.memo||'')}</td>
+      <td><button class="danger" data-del="${esc(r.managementId)}" style="padding:6px 8px">삭제</button></td>`;
+    tbody.appendChild(tr);
+  });
+  document.getElementById('countA').textContent=A;document.getElementById('countB').textContent=B;document.getElementById('countC').textContent=C;
+  tbody.querySelectorAll('[data-del]').forEach(btn=>btn.onclick=async()=>{
+    if(confirm(`${btn.dataset.del} 기록을 삭제할까요?`)){ await delRow(btn.dataset.del); await render(); await refreshPreview(); }
+  });
+}
+function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+
+async function buildAndDownloadXlsx(mode='today'){
+  if(typeof XLSX==='undefined'){
+    alert('엑셀 생성 모듈을 불러오지 못했습니다. 인터넷 연결 후 다시 시도하세요.');
+    return false;
+  }
+
+  const allRaw=(await getAll()).sort((a,b)=>a.createdAt.localeCompare(b.createdAt));
+  const key=dateKey();
+  const all = mode==='today'
+    ? allRaw.filter(r=>(r.managementId||'').startsWith(key+'-'))
+    : allRaw;
+
+  if(!all.length){
+    alert(mode==='today' ? '오늘 저장된 상담 기록이 없습니다.' : '저장된 상담 기록이 없습니다.');
+    return false;
+  }
+
+  const rows=all.map(r=>({
+    '관리번호':r.managementId,'상담일시':r.consultationAt,'담당자':r.staff,
+    '대상자 성명/이니셜':r.subject,'연령대':r.age,'우선 발굴 대상':(r.priority||[]).join(' / '),
+    '거주형태':r.residenceType || ((r.care||[]).find(v=>v==='독거'||v==='비독거') || ''),
+    '비독거 메모':r.nonSingleMemo || '',
+    '공적돌봄 사용여부':r.publicCareUse ? '사용' : '미사용',
+    '공적돌봄 메모':r.publicCareMemo || '',
+    '거동상태':r.mobility || '',
+    '보건의료·건강관리':(r.health||[]).join(' / '),
+    '요양·활동지원':r.nursing.join(' / '),'생활지원':r.life.join(' / '),
+    '주거지원':r.housing.join(' / '),'담당자 초기 판단':r.judgment,
+    '추가 상담/재접촉':r.recontact,'돌봄필요점수':r.score,'초기분류':r.grade,
+    '우선검토사유':r.reasons,'추천서비스':r.services,'특이사항 및 기타 메모':r.memo
+  }));
+
+  const ws=XLSX.utils.json_to_sheet(rows);
+  ws['!cols']=[
+    {wch:16},{wch:18},{wch:12},{wch:18},{wch:12},{wch:35},
+    {wch:12},{wch:30},{wch:16},{wch:32},{wch:18},
+    {wch:40},{wch:35},{wch:35},{wch:35},{wch:28},{wch:16},{wch:12},
+    {wch:15},{wch:30},{wch:40},{wch:50}
+  ];
+
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'초기상담DB');
+  const summary=[
+    ['구분','건수'],
+    ['A-우선검토',all.filter(r=>r.grade.startsWith('A')).length],
+    ['B-추가확인',all.filter(r=>r.grade.startsWith('B')).length],
+    ['C-일반관리',all.filter(r=>r.grade.startsWith('C')).length],
+    ['전체',all.length],
+    ['생성일시',displayDate()]
+  ];
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(summary),'요약');
+
+  const staff=(getSavedStaff()||'담당자').replace(/[\\/:*?"<>| ]/g,'_');
+  const suffix=mode==='today' ? key : `전체_${key}`;
+  const fileName=`통합돌봄_초기상담DB_${staff}_${suffix}.xlsx`;
+  const out=XLSX.write(wb,{bookType:'xlsx',type:'array'});
+  const blob=new Blob([out],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download=fileName; a.style.display='none';
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);},2000);
+
+  document.getElementById('resultBox').innerHTML=
+    `<b>엑셀 다운로드 요청 완료</b><br>${fileName}<br><span class="small">파일 저장 여부를 확인한 뒤 원본 기록 삭제 여부를 결정하세요.</span>`;
+  return true;
+}
+
+async function exportTodayAndOfferDelete(){
+  const ok=await buildAndDownloadXlsx('today');
+  if(!ok) return;
+  setTimeout(async()=>{
+    const key=dateKey();
+    const yes=confirm(
+      `오늘(${key}) 상담자료의 엑셀 다운로드를 요청했습니다.\n\n` +
+      `다운로드된 파일이 정상적으로 저장되었는지 먼저 확인하세요.\n\n` +
+      `확인했다면 오늘 상담기록을 이 기기에서 모두 삭제하시겠습니까?`
+    );
+    if(!yes) return;
+
+    const again=confirm('오늘 상담기록을 일괄삭제하면 브라우저에서는 복구할 수 없습니다. 정말 삭제하시겠습니까?');
+    if(!again) return;
+
+    const count=await deleteRowsByDateKey(key);
+    await render(); await refreshPreview();
+    document.getElementById('resultBox').innerHTML=
+      `<b>오늘 상담기록 ${count}건 삭제 완료</b><br><span class="small">엑셀 파일 보관 여부를 다시 확인하세요.</span>`;
+  },700);
+}
+
+async function backupJson(){
+  const all=await getAll();
+  const blob=new Blob([JSON.stringify(all,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`통합돌봄_백업_${dateKey()}.json`;a.click();URL.revokeObjectURL(a.href);
+}
+
+document.getElementById('saveBtn').onclick=save;
+document.getElementById('resetBtn').onclick=()=>{ if(confirm('현재 입력 내용을 초기화할까요?')) resetForm(); };
+document.getElementById('exportBtn').onclick=exportTodayAndOfferDelete;
+document.getElementById('exportAllBtn').onclick=()=>buildAndDownloadXlsx('all');
+document.getElementById('backupBtn').onclick=backupJson;
+document.getElementById('saveStaffBtn').onclick=saveStaffName;
+document.getElementById('staffSetupInput').addEventListener('keydown',e=>{ if(e.key==='Enter') saveStaffName(); });
+document.getElementById('changeStaffBtn').onclick=openStaffModal;
+document.getElementById('clearAllBtn').onclick=async()=>{
+  if(confirm('이 기기에 저장된 모든 상담기록을 삭제합니다. 계속할까요?')){
+    const again=confirm('전체 상담기록은 삭제 후 복구할 수 없습니다. 정말 삭제하시겠습니까?');
+    if(!again) return;
+    await clearDB(); await render(); await refreshPreview();
+  }
+};
+
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();
+  deferredInstallPrompt=e;
+});
+window.addEventListener('appinstalled',()=>{
+  deferredInstallPrompt=null;
+  document.getElementById('installBtn').style.display='none';
+});
+document.getElementById('installBtn').onclick=async()=>{
+  if(isStandalone()){ alert('이미 홈 화면 앱으로 실행 중입니다.'); return; }
+  if(deferredInstallPrompt){
+    deferredInstallPrompt.prompt();
+    await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt=null;
+    return;
+  }
+  if(isIOS()){
+    alert('iPhone/iPad에서는 Safari의 공유 버튼을 누른 뒤 “홈 화면에 추가”를 선택하세요.');
+  }else{
+    alert('브라우저 메뉴에서 “앱 설치” 또는 “홈 화면에 추가”를 선택하세요.');
+  }
+};
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+}
+
+(async()=>{
+  initTheme();
+  syncConditionalFields();
+  await openDB();
+  applySavedStaff();
+  if(!getSavedStaff()) openStaffModal();
+  await render();
+  await refreshPreview();
+  if(isStandalone()) document.getElementById('installBtn').style.display='none';
+})();
+</script>
+</body>
+</html>
